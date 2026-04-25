@@ -1,0 +1,1 @@
+{% extends 'layout.html' %}{% set title='운영 로그' %}{% set subtitle='판매 반영, 혼잡도 변경, 선호도 응답 등 운영 데이터가 기록됩니다.' %}{% block content %}<section class="panel"><h3>최근 운영 기록</h3><div class="timeline">{% for e in s.events %}<div class="event"><strong>{{e.event}}</strong><div class="small">{{e.created_at}}</div><div>{{e.detail}}</div></div>{% endfor %}</div></section>{% endblock %}
