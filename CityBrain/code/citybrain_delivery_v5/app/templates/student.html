@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="topbar">
+  <div>
+    <h2 style="margin:0;">학생 화면</h2>
+    <div class="small">가기 전에 필요한 핵심 정보와 공지사항을 제공합니다.</div>
+  </div>
+  <a class="btn" href="/admin/login">관리자</a>
+</div>
+
+<div class="card">
+  <div class="small">오늘의 일품식</div>
+  <div style="font-size:32px;font-weight:700;">{{ state.menu_name }}</div>
+  <div class="small">소진 예상 시간 {{ state.sellout_eta }}</div>
+</div>
+
+<div class="grid">
+  <div class="metric"><div class="label">남은 수량</div><div class="value">{{ state.remaining_count }}개</div></div>
+  <div class="metric"><div class="label">현재 혼잡도</div><div class="value">{{ state.congestion_level }}</div></div>
+  <div class="metric"><div class="label">예상 대기시간</div><div class="value">{{ state.wait_minutes }}분</div></div>
+  <div class="metric"><div class="label">누적 판매량</div><div class="value">{{ state.sold_count }}개</div></div>
+</div>
+
+<div class="cols-2">
+  <div class="card">
+    <h3 class="section-title">학생 조사 결과 요약</h3>
+    <div class="grid">
+      <div class="metric"><div class="label">응답자</div><div class="value">{{ survey.total_responses }}명</div></div>
+      <div class="metric"><div class="label">식사 포기 경험</div><div class="value">{{ survey.abandon_count }}명</div></div>
+      <div class="metric"><div class="label">정보 제공 도움</div><div class="value">{{ survey.info_help_count }}명</div></div>
+      <div class="metric"><div class="label">가장 알고 싶은 정보</div><div class="value">{{ survey.top_info }}</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 class="section-title">공지사항</h3>
+    {% for n in notices %}
+      <div style="margin-bottom:14px;">
+        <div class="pill">{{ n.created_at }}</div>
+        <div style="font-weight:700;margin-top:8px;">{{ n.title }}</div>
+        <div class="small" style="margin-top:6px;">{{ n.body }}</div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
