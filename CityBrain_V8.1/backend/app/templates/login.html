@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block body_class %}desktop-body{% endblock %}
+{% block content %}
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="brand" style="margin-bottom:18px">
+      <div class="logo-mark">P</div>
+      <div>
+        <div class="brand-title" style="color:#172033">CityBrain Admin</div>
+        <div class="brand-sub" style="color:#687386">배재대학교 학생식당 운영 대시보드</div>
+      </div>
+    </div>
+    <h1>관리자 로그인</h1>
+    <div class="muted small">판매 수량·혼잡도·대기시간을 반영하면 학생 화면에 자동 적용됩니다.</div>
+    {% if error %}<div class="error">{{ error }}</div>{% endif %}
+    <form method="post" action="/admin/login" style="margin-top:18px">
+      <label>아이디</label>
+      <input name="username" value="admin" required>
+      <div style="height:12px"></div>
+      <label>비밀번호</label>
+      <input type="password" name="password" placeholder="change-me-now" required>
+      <div style="height:18px"></div>
+      <button class="btn orange" type="submit" style="width:100%">로그인</button>
+    </form>
+    <div class="muted small" style="margin-top:14px">테스트 계정: admin / change-me-now · operator / operator123 · viewer / viewer123</div>
+  </div>
+</div>
+{% endblock %}

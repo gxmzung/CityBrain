@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block body_class %}desktop-body{% endblock %}
+{% block content %}
+<div class="policy-wrap">
+  <section class="policy-card">
+    <div class="logo-mark">CB</div>
+    <h1>CityBrain 운영 상태</h1>
+    <p class="muted">API 상태는 <code>/api/health</code>, 운영 진단은 <code>/api/ops/status</code>에서 확인합니다.</p>
+    <div class="status-grid">
+      <div><b>학생식당 MVP</b><span>READY</span></div>
+      <div><b>관리자 대시보드</b><span>READY</span></div>
+      <div><b>Android API</b><span>READY</span></div>
+      <div><b>키오스크 API</b><span>MOCK READY</span></div>
+    </div>
+  </section>
+</div>
+{% endblock %}
