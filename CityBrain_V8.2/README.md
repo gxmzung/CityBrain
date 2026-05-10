@@ -253,3 +253,13 @@ This project is a smart campus MVP focused on service flow, interface structure,
 
 > CityBrain is a smart campus MVP focused on campus dining operations.  
 > I built it to explore how student-facing information and admin-side operational visibility can be connected through a FastAPI backend, SQLite database, student web, admin dashboard, and local assistant-style interface.
+
+---
+
+## Demo / Runbook
+
+CityBrain 시연 및 실행 절차는 아래 문서에 정리했다.
+
+- [CITYBRAIN_RUNBOOK.md](./CITYBRAIN_RUNBOOK.md)
+- [CITYBRAIN_CODE_FLOW.md](./CITYBRAIN_CODE_FLOW.md)
+- [code-reading-log.md](./code-reading-log.md)
