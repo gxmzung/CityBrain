@@ -263,3 +263,16 @@ CityBrain 시연 및 실행 절차는 아래 문서에 정리했다.
 - [CITYBRAIN_RUNBOOK.md](./CITYBRAIN_RUNBOOK.md)
 - [CITYBRAIN_CODE_FLOW.md](./CITYBRAIN_CODE_FLOW.md)
 - [code-reading-log.md](./code-reading-log.md)
+
+---
+
+## Evidence Package
+
+CityBrain 심사와 시연 때 보여줄 증거 자료는 아래 폴더에 정리했다.
+
+- [evidence/README.md](./evidence/README.md)
+- [evidence/screenshots](./evidence/screenshots)
+- [evidence/demo-flow](./evidence/demo-flow)
+- [evidence/code-structure](./evidence/code-structure)
+- [evidence/runbook](./evidence/runbook)
+- [evidence/interview-notes](./evidence/interview-notes)
