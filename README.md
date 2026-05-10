@@ -1,177 +1,285 @@
 # CityBrain
 
-배재대학교 학생식당에서 시작하는 **데이터 기반 스마트캠퍼스 운영 플랫폼**입니다.
+### Data-driven smart campus cafeteria platform
 
-학생은 혼잡과 대기를 줄이고,  
-학교는 운영 데이터를 확보할 수 있도록  
-학생식당을 **운영 데이터가 쌓이는 실증 공간**으로 전환하는 것을 목표로 합니다.
+CityBrain is a smart campus MVP that starts from the university cafeteria.
 
----
+The project focuses on a concrete campus problem: students do not know menu availability, congestion, waiting time, or sell-out status before visiting the cafeteria. At the same time, the university side often lacks structured operational data for demand, congestion, and menu consumption.
 
-## Overview
-
-학생식당의 문제는 단순한 불편이 아닙니다.
-
-현재 학생은 식당에 가기 전
-- 일품식이 남아 있는지
-- 얼마나 붐비는지
-- 얼마나 기다려야 하는지
-
-알기 어렵습니다.
-
-반면 학교도
-- 메뉴별 수요
-- 혼잡 시간대
-- 소진 패턴
-
-같은 운영 데이터를 충분히 축적하지 못해  
-문제가 반복돼도 개선 근거를 얻기 어렵습니다.
-
-CityBrain은 이 문제를 해결하기 위해  
-학생식당을 **데이터 기반 운영 개선의 첫 실증 공간**으로 제안합니다.
-
----
-
-## Core Idea
-
-학생식당의 불편을  
-단순 민원이 아니라  
-**데이터 기반 운영 개선 문제**로 바꾼다.
-
----
-
-## Core Features
-
-### 1. Student View
-학생이 식당에 가기 전에 필요한 핵심 정보를 제공합니다.
-
-- 오늘의 일품식 확인
-- 남은 수량 확인
-- 현재 혼잡도 확인
-- 예상 대기시간 확인
-- 소진 예상 시간 확인
-- 메뉴 선호도 응답
-
-### 2. Admin View
-운영 측이 학생식당 상태를 즉시 반영할 수 있도록 구성했습니다.
-
-- 오늘 총 수량 설정
-- 현재 남은 수량 확인
-- 판매 반영
-- 혼잡도 변경
-- 운영 데이터 확인
-- 관리자 대시보드 제공
-
-### 3. Operation Data
-학생 편의와 함께 학교의 운영 개선 근거를 확보합니다.
-
-- 메뉴별 수요 분석
-- 시간대별 혼잡 패턴 파악
-- 소진 흐름 확인
-- 운영 판단 근거 축적
-
----
-
-## Demo Flow
-
-1. 학생 화면에서
-   - 남은 수량 63개
-   - 혼잡도 보통
-   - 예상 대기시간 7분 확인
-
-2. 관리자 화면에서
-   - 판매 5건 반영
-   - 혼잡도 상태 변경
-
-3. 학생 화면에 즉시 반영
-   - 남은 수량 58개
-   - 변경된 혼잡도
-   - 변경된 예상 대기시간 확인
-
-즉, 작은 MVP만으로도  
-**학생 경험 변화 + 운영 데이터 반영**을 동시에 보여줄 수 있습니다.
-
----
-
-## System Flow
-
-- 데이터 입력
-  - 키오스크 판매 데이터 연동(API 또는 판매 로그 export)
-  - 또는 관리자 수동 입력
-
-- 분석 서버
-  - 수량 계산
-  - 혼잡도 계산
-  - 대기시간 산출
-
-- 학생 화면 제공
-  - 남은 수량
-  - 혼잡도
-  - 예상 대기시간
-  - 소진 예상 시간
-
-- 관리자 대시보드
-  - 운영 반영
-  - 상태 변경
-  - 데이터 축적
+CityBrain turns the cafeteria into a small but realistic data collection and service improvement space.
 
 ---
 
 ## Why Start from the Cafeteria?
 
-학생식당은
-- 학생 체감도가 높고
-- 수요가 반복적으로 발생하며
-- 데이터가 빠르게 쌓이고
-- 개선 효과가 눈에 바로 보이는 공간입니다.
+The cafeteria is a strong first target for smart campus validation because:
 
-그래서 스마트캠퍼스의 첫 단계로 가장 현실적인 실증 대상이라고 판단했습니다.
+- students feel the inconvenience directly
+- demand repeats every day
+- congestion and sell-out patterns are observable
+- operational data can be collected quickly
+- the impact is easy to demonstrate
+- the MVP can stay small and safe
+
+The goal is not to build a full smart campus at once.  
+The goal is to prove that one high-frequency campus space can be improved through data.
 
 ---
 
-## Expected Impact
+## Core Idea
 
-### For Students
-- 헛걸음 감소
-- 불필요한 대기 감소
-- 혼잡 스트레스 완화
-- 더 예측 가능한 이용 경험
+```text
+Student inconvenience
+→ operational data
+→ admin dashboard
+→ better campus service decisions
+```
 
-### For University
-- 메뉴별 수요 데이터 확보
-- 혼잡 시간대 파악
-- 운영 개선 근거 확보
-- 데이터 기반 의사결정 지원
-- 스마트캠퍼스 확장 기반 마련
+CityBrain treats cafeteria inconvenience not only as a complaint issue, but as an operations and data problem.
+
+---
+
+## Main Features
+
+### Student View
+
+Students can check cafeteria status before visiting.
+
+- today’s menu
+- remaining quantity
+- congestion level
+- estimated waiting time
+- estimated sell-out time
+- student feedback / preference response
+
+### Admin View
+
+Operators can update and monitor cafeteria status.
+
+- set total quantity
+- update remaining quantity
+- reflect sales
+- change congestion status
+- view operational data
+- manage dashboard information
+
+### Operation Data
+
+CityBrain collects data that can support future decision-making.
+
+- menu demand
+- congestion pattern
+- sell-out flow
+- student response
+- operational history
+
+---
+
+## Demo Flow
+
+1. Student checks the current cafeteria state
+   - remaining quantity
+   - congestion level
+   - estimated waiting time
+
+2. Admin updates operation status
+   - sales count
+   - congestion level
+   - menu status
+
+3. Student view reflects the updated state
+
+This demonstrates both student-facing value and admin-side operational value in a small MVP.
+
+---
+
+## Current Main Version
+
+```text
+Current main implementation: CityBrain_V8.2
+Previous iteration:          CityBrain_V8.1
+```
+
+`CityBrain_V8.2` includes:
+
+- FastAPI backend
+- admin web dashboard
+- student web interface
+- Android app scaffold
+- Korean UI/menu iteration
+- Jarvis assistant route prototype
+- privacy/security/release checklist documents
+- demo connection and backup scripts
+- UI/UX screenshots and concept assets
+
+---
+
+## Repository Structure
+
+```text
+CityBrain/
+├─ README.md
+├─ CityBrain_V8.1/
+│  ├─ backend/
+│  ├─ android/
+│  ├─ docs/
+│  └─ scripts/
+│
+├─ CityBrain_V8.2/
+│  ├─ backend/
+│  │  ├─ app/
+│  │  ├─ data/
+│  │  ├─ tests/
+│  │  └─ requirements.txt
+│  │
+│  ├─ android/
+│  │  ├─ app/
+│  │  ├─ build.gradle.kts
+│  │  └─ settings.gradle.kts
+│  │
+│  ├─ docs/
+│  │  ├─ 00_CONNECTION_MAP.md
+│  │  ├─ 01_TECH_STACK_AND_ROADMAP.md
+│  │  ├─ 02_DESIGN_SYSTEM.md
+│  │  ├─ 03_PRIVACY_POLICY_DRAFT.md
+│  │  ├─ 04_SECURITY_BACKUP_INCIDENT.md
+│  │  ├─ 05_STORE_RELEASE_CHECKLIST.md
+│  │  ├─ 10_V8_UI_UX_IMPLEMENTATION.md
+│  │  ├─ 11_V8_2_PIXEL_CLONE_NOTES.md
+│  │  └─ 12_CITYBRAIN_JARVIS_STUDY_GUIDE.md
+│  │
+│  ├─ assets/
+│  └─ scripts/
+│
+└─ 이미지/
+   └─ IMAGES/
+```
 
 ---
 
 ## Tech Stack
 
-### Frontend
+### Backend
+
+- Python
+- FastAPI
+- SQLite
+- Uvicorn
+- pytest
+
+### Web
+
 - HTML
 - CSS
 - JavaScript
+- Jinja templates
 
-### Backend
-- Python
-- FastAPI
+### Android
 
-### Data
-- SQLite
+- Kotlin
+- Jetpack Compose
+- Gradle Kotlin DSL
 
-### Server / Demo
-- Uvicorn
+### Documentation / Operations
+
+- privacy policy draft
+- security / backup / incident notes
+- store release checklist
+- demo account policy
+- connection map
+- production gap document
 
 ---
 
-## Project Structure
+## Quick Start
+
+### Backend demo
 
 ```bash
-citybrain/
-├─ app/
-│  ├─ main.py
-│  ├─ templates/
-│  └─ static/
-├─ requirements.txt
-└─ README.md
+cd CityBrain_V8.2/backend
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+Open:
+
+```text
+Student web: http://127.0.0.1:8000/
+Admin login: http://127.0.0.1:8000/admin/login
+API docs:    http://127.0.0.1:8000/docs
+```
+
+### Android app
+
+Open the Android project:
+
+```text
+CityBrain_V8.2/android
+```
+
+Configure the backend URL in the Android build configuration before running on a device.
+
+Example:
+
+```text
+CITYBRAIN_BASE_URL=http://YOUR_LOCAL_IP:8000/
+```
+
+---
+
+## Implementation Evidence
+
+This repository includes implementation and operation evidence, not only planning documents.
+
+Examples:
+
+- backend route structure
+- admin/student templates
+- Android screens
+- UI/UX implementation notes
+- connection map
+- release checklist
+- security and backup notes
+- demo scripts
+- screenshots and concept images
+
+---
+
+## Production Gap
+
+CityBrain is an MVP and demo-stage project.
+
+Known gaps before real deployment:
+
+- official student authentication is not implemented
+- privacy policy requires institutional review
+- production database and backup policy need hardening
+- accessibility and responsive QA are incomplete
+- app store release process is not finished
+- real cafeteria POS/kiosk integration is not connected
+- admin authorization should be strengthened
+
+These gaps are documented intentionally because the project is positioned as a realistic campus MVP, not as a finished production service.
+
+---
+
+## Future Work
+
+- connect kiosk or sales log data
+- improve student identity verification
+- add menu demand prediction
+- improve Android UI consistency
+- add operational analytics dashboard
+- add admin audit logs
+- prepare AAB signing and store policy documents
+- run a limited pilot with cafeteria operators
+
+---
+
+## Status
+
+CityBrain is a smart campus cafeteria MVP.
+
+The current main version is `CityBrain_V8.2`, with backend, Android, documentation, and UI/UX evidence included.
