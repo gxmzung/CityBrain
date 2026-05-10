@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block body_class %}desktop-body{% endblock %}
+{% block content %}
+<div class="admin-shell">
+  <aside class="admin-sidebar">
+    <div class="brand"><div class="logo-mark">CB</div><div><div class="brand-title">CityBrain</div><div class="brand-sub">배재대학교 학생식당</div></div></div>
+    <nav class="side-nav"><a class="side-link active">운영 대시보드</a><a class="side-link" href="/">학생 화면</a><a class="side-link" href="/admin/logout">로그아웃</a></nav>
+  </aside>
+  <main class="admin-main">
+    <section class="admin-topband">
+      <div><div class="eyebrow">배재대학교 학생식당 시범운영</div><h1>CityBrain 운영 대시보드</h1><p>관리자 반영 → 서버 동기화 → 학생 화면 실시간 갱신</p></div>
+      <form method="post" action="/admin/reset-demo">{% if can_edit %}<button class="btn" type="submit">시연값 초기화</button>{% endif %}</form>
+    </section>
+    <section class="admin-kpi-grid">
+      <article class="kpi-card"><div class="kpi-label">오늘 총 수량</div><div class="kpi-value">{{ state.total_count }}식</div></article>
+      <article class="kpi-card"><div class="kpi-label">현재 남은 수량</div><div class="kpi-value" data-state="remaining_count">{{ state.remaining_count }}</div></article>
+      <article class="kpi-card"><div class="kpi-label">반영된 판매량</div><div class="kpi-value" data-state="sold_count">{{ state.sold_count }}</div></article>
+      <article class="kpi-card"><div class="kpi-label">현재 혼잡도</div><div class="kpi-value" data-congestion-class data-state="congestion_level">{{ state.congestion_level }}</div></article>
+      <article class="kpi-card"><div class="kpi-label">예상 대기시간</div><div class="kpi-value"><span data-state="wait_minutes">{{ state.wait_minutes }}</span>분</div></article>
+    </section>
+    <section class="admin-feature-grid">
+      <article class="admin-panel">
+        <h2>식사 시간대 관리</h2>
+        <p><b class="good">자동 전환 ON</b> · 현재 시간 기준 자동 전환 중이며 필요 시 수동 변경합니다.</p>
+        <div class="quick-grid"><button class="btn">조식</button><button class="btn primary">중식</button><button class="btn">석식</button></div>
+      </article>
+      <article class="admin-panel">
+        <h2>빠른 관리 액션</h2>
+        {% if can_edit %}
+        <div class="quick-grid">
+          <form method="post" action="/admin/quick-sale"><input type="hidden" name="sold_delta" value="1"><input type="hidden" name="congestion_level" value="보통"><input type="hidden" name="wait_minutes" value="7"><button class="btn primary block">판매 1건 반영</button></form>
+          <form method="post" action="/admin/quick-sale"><input type="hidden" name="sold_delta" value="5"><input type="hidden" name="congestion_level" value="혼잡"><input type="hidden" name="wait_minutes" value="15"><button class="btn primary block">판매 5건 반영</button></form>
+          <form method="post" action="/admin/quick-congestion"><input type="hidden" name="congestion_level" value="원활"><button class="btn success block">원활로 변경</button></form>
+          <form method="post" action="/admin/quick-congestion"><input type="hidden" name="congestion_level" value="보통"><button class="btn soft block">보통으로 변경</button></form>
+          <form method="post" action="/admin/quick-congestion"><input type="hidden" name="congestion_level" value="혼잡"><button class="btn danger block">혼잡으로 변경</button></form>
+        </div>
+        {% else %}<p>조회 전용 계정입니다.</p>{% endif %}
+      </article>
+    </section>
+    <section class="admin-feature-grid">
+      <article class="admin-panel">
+        <h2>학생 화면 수동 반영</h2>
+        {% if can_edit %}
+        <form method="post" action="/admin/update"><div class="form-grid">
+          <div><label>메뉴명</label><input name="menu_name" value="{{ state.menu_name }}"></div>
+          <div><label>오늘 총 수량</label><input type="number" name="total_count" value="{{ state.total_count }}"></div>
+          <div><label>현재 남은 수량</label><input type="number" name="remaining_count" value="{{ state.remaining_count }}"></div>
+          <div><label>누적 판매량</label><input type="number" name="sold_count" value="{{ state.sold_count }}"></div>
+          <div><label>혼잡도</label><select name="congestion_level"><option {% if state.congestion_level=='원활' %}selected{% endif %}>원활</option><option {% if state.congestion_level=='보통' %}selected{% endif %}>보통</option><option {% if state.congestion_level=='혼잡' %}selected{% endif %}>혼잡</option></select></div>
+          <div><label>예상 대기시간</label><input type="number" name="wait_minutes" value="{{ state.wait_minutes }}"></div>
+          <div><label>현재 식당 인원</label><input type="number" name="current_people" value="{{ state.current_people }}"></div>
+          <div><label>소진 예상 시간</label><input name="sellout_eta" value="{{ state.sellout_eta }}"></div>
+        </div><br><button class="btn primary">학생 화면에 반영</button></form>{% endif %}
+      </article>
+      <article class="admin-panel">
+        <h2>학생 참여 요약</h2>
+        <div class="survey-summary-grid"><div><strong>4.2</strong><span>평균 평점</span></div><div><strong>{{ survey.total_responses }}</strong><span>참여 인원</span></div><div><strong>{{ survey.top_info }}</strong><span>관심 정보</span></div></div>
+        <p>선호 메뉴 TOP: 한식, 일품, 면류, 덮밥, 분식</p>
+      </article>
+    </section>
+    <section class="admin-panel"><h2>최근 반영 내역</h2><div class="table-wrap"><table><thead><tr><th>시간</th><th>사용자</th><th>작업</th><th>상세</th></tr></thead><tbody>{% for row in logs %}<tr><td>{{ row.created_at }}</td><td>{{ row.actor }}</td><td>{{ row.action }}</td><td>{{ row.detail }}</td></tr>{% endfor %}</tbody></table></div></section>
+  </main>
+</div>
+{% endblock %}

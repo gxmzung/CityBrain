@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>{{ title or "CityBrain" }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0D47A1">
+  <link rel="manifest" href="/static/manifest.json">
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body class="{% block body_class %}{% endblock %}" data-live="{% block live_mode %}{% endblock %}">
+  {% block content %}{% endblock %}
+  <script src="/static/app.js"></script>
+</body>
+</html>

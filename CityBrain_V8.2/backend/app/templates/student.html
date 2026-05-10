@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block body_class %}student-body v81-body{% endblock %}
+{% block live_mode %}student{% endblock %}
+{% block content %}
+<main class="v81-app-shell">
+  <section class="v81-phone-frame">
+    <header class="v81-topbar">
+      <div class="v81-brand-row">
+        <div class="v81-logo-mark">배</div>
+        <div>
+          <div class="v81-school">배재대학교</div>
+          <h1>학생식당 실시간 안내</h1>
+        </div>
+        <button class="v81-icon-btn" type="button" data-toast="새로운 공지는 공지 탭에서 확인할 수 있어요.">🔔</button>
+      </div>
+      <p>오늘의 식사 상태를 확인하고 헛걸음을 줄이세요.</p>
+    </header>
+
+    <nav class="v81-tabs" aria-label="식사 시간대">
+      <button type="button" class="v81-tab">조식</button>
+      <button type="button" class="v81-tab active">중식</button>
+      <button type="button" class="v81-tab">석식</button>
+    </nav>
+    <div class="v81-auto-caption">현재 시간 기준 자동 전환 · 관리자 수동 변경 가능</div>
+
+    <section class="v81-hero-card">
+      <div class="v81-card-top">
+        <div>
+          <span class="v81-badge blue-on-dark">오늘의 일품식</span>
+          <h2 data-state="menu_name">{{ state.menu_name }}</h2>
+          <p>중식 일품 · 학생식당</p>
+        </div>
+        <div class="v81-food-photo">🍱</div>
+      </div>
+      <div class="v81-hero-count">
+        <div>
+          <span>남은 수량</span>
+          <strong><em data-state="remaining_count">{{ state.remaining_count }}</em> / {{ state.total_count }}식</strong>
+        </div>
+        <span class="v81-status-pill {{ 'good' if state.congestion_level == '원활' else 'bad' if state.congestion_level == '혼잡' else 'normal' }}" data-congestion-class data-state="congestion_level">{{ state.congestion_level }}</span>
+      </div>
+      <div class="v81-hero-mini-grid">
+        <div><span>예상 대기</span><strong><span data-state="wait_minutes">{{ state.wait_minutes }}</span>분</strong></div>
+        <div><span>품절 예상</span><strong data-state="sellout_eta">{{ state.sellout_eta }}</strong></div>
+        <div><span>현재 인원</span><strong data-state="people_with_unit">약 {{ state.current_people }}명</strong></div>
+      </div>
+      <div class="v81-progress"><i data-progress style="width: {{ state.remaining_ratio }}%"></i></div>
+      <p class="v81-recommend" data-state="judgement">{{ state.judgement }}</p>
+    </section>
+
+    <section class="v81-metrics">
+      <article><span>남은 수량</span><strong><span data-state="remaining_count">{{ state.remaining_count }}</span>식</strong><small>{{ state.remaining_ratio }}%</small></article>
+      <article><span>혼잡도</span><strong data-congestion-class data-state="congestion_level">{{ state.congestion_level }}</strong><small>현재 상태</small></article>
+      <article><span>예상 대기</span><strong><span data-state="wait_minutes">{{ state.wait_minutes }}</span>분</strong><small>품절 {{ state.sellout_eta }}</small></article>
+    </section>
+
+    <section class="v81-quick-actions">
+      <button type="button" data-scroll="menu-section"><b>🍽️</b><span>메뉴 보기</span><small>오늘/주간 메뉴</small></button>
+      <button type="button" data-scroll="notice-section"><b>📢</b><span>공지 확인</span><small>운영 공지 보기</small></button>
+      <button type="button" data-scroll="participate-section"><b>🙋</b><span>혼잡도 제보</span><small>실시간 제보</small></button>
+    </section>
+
+    <section class="v81-section" id="live-section">
+      <div class="v81-section-head"><h3>실시간 현황</h3><button type="button" class="v81-link-btn" data-refresh>새로고침</button></div>
+      <div class="v81-live-card">
+        <div class="v81-live-progress"><span>남은 수량</span><strong><span data-state="remaining_count">{{ state.remaining_count }}</span> / {{ state.total_count }}식</strong></div>
+        <div class="v81-progress light"><i data-progress style="width: {{ state.remaining_ratio }}%"></i></div>
+        <div class="v81-report-row">
+          <button type="button" class="good" data-report="원활">원활해요</button>
+          <button type="button" class="normal" data-report="보통">보통이에요</button>
+          <button type="button" class="bad" data-report="혼잡">혼잡해요</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="v81-section" id="menu-section">
+      <div class="v81-section-head"><h3>오늘 메뉴</h3><span>중식 기준</span></div>
+      <article class="v81-menu-card">
+        <span class="v81-badge">오늘의 대표 메뉴</span>
+        <h4 data-state="menu_name">{{ state.menu_name }}</h4>
+        <p>가격 5,500원 · 쌀밥, 국, 김치 포함</p>
+        <dl><div><dt>운영 시간</dt><dd>11:30 ~ 14:00</dd></div><div><dt>이용 가격</dt><dd>일반 5,500원 / 교직원 6,000원</dd></div><div><dt>식당 위치</dt><dd>배재관 1층 학생식당</dd></div></dl>
+      </article>
+      <article class="v81-weekly-card">
+        <h4>주간 메뉴 미리보기</h4>
+        <ul><li>월 5.12 · 제육볶음 정식 / 돈까스 카레</li><li>화 5.13 · 닭갈비 덮밥 / 김치찌개</li><li>수 5.14 · 불고기 정식 / 비빔밥</li><li>목 5.15 · 함박스테이크 / 잔치국수</li><li>금 5.16 · 치킨마요 덮밥 / 부대찌개</li></ul>
+      </article>
+    </section>
+
+    <section class="v81-section" id="notice-section">
+      <div class="v81-section-head"><h3>운영 공지</h3><span>전체</span></div>
+      <div class="v81-notice-list">
+        <article><b>시범운영 안내</b><p>학생식당 실시간 안내 서비스가 시범운영을 시작했습니다.</p></article>
+        <article><b>혼잡 시간대 안내</b><p>중식 12:00~12:30 사이 혼잡이 예상됩니다.</p></article>
+        {% for n in notices[:2] %}<article><b>{{ n.title }}</b><p>{{ n.body }}</p></article>{% endfor %}
+      </div>
+    </section>
+
+    <section class="v81-section" id="participate-section">
+      <div class="v81-section-head"><h3>학생 참여</h3><span>평가·설문·제보</span></div>
+      <article class="v81-participate-card">
+        <label>학식 평가</label><div class="v81-stars" data-stars><button>★</button><button>★</button><button>★</button><button>★</button><button>☆</button><strong>4.2 / 5.0</strong></div>
+        <label>메뉴 선호 조사</label><div class="v81-chip-row"><button class="active">한식</button><button class="active">일품</button><button>분식</button><button>면류</button><button>덮밥</button></div>
+        <label>빠른 의견 보내기</label><textarea maxlength="200" placeholder="건의사항을 입력해주세요. 최대 200자"></textarea>
+        <button type="button" class="v81-primary" data-toast="의견이 접수되었습니다.">의견 보내기</button>
+      </article>
+    </section>
+
+    <nav class="v81-bottom-nav">
+      <a class="active" href="#"><b>⌂</b><span>홈</span></a>
+      <a href="#live-section"><b>◷</b><span>실시간</span></a>
+      <a href="#menu-section"><b>▤</b><span>메뉴</span></a>
+      <a href="#notice-section"><b>◼</b><span>공지</span></a>
+      <a href="#participate-section"><b>♣</b><span>참여</span></a>
+    </nav>
+  </section>
+  <div class="v81-toast" id="v81Toast">반영되었습니다.</div>
+</main>
+{% endblock %}

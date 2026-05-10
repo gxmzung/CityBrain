@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block body_class %}jarvis-body{% endblock %}
+{% block content %}
+<main class="jarvis-shell">
+  <section class="jarvis-panel">
+    <div class="jarvis-topline">
+      <span class="jarvis-dot"></span>
+      <span>LOCALHOST MODE</span>
+      <span class="jarvis-processing" id="jarvisStatus">READY</span>
+    </div>
+
+    <header class="jarvis-hero">
+      <p class="jarvis-kicker">CITYBRAIN CAMPUS ASSISTANT</p>
+      <h1>CITYBRAIN JARVIS</h1>
+      <p>학생식당 데이터, 공지, 혼잡도, 잔여 수량을 음성으로 조회하는 로컬 AI 비서 MVP</p>
+    </header>
+
+    <div class="jarvis-actions">
+      <button type="button" class="jarvis-btn primary" id="micButton">마이크 시작</button>
+      <button type="button" class="jarvis-btn" data-prompt="오늘 학식 알려줘">학식</button>
+      <button type="button" class="jarvis-btn" data-prompt="지금 혼잡도 알려줘">혼잡도</button>
+      <button type="button" class="jarvis-btn" data-prompt="잔여 수량 몇 개야?">잔여</button>
+      <button type="button" class="jarvis-btn" data-prompt="공지 요약해줘">공지</button>
+    </div>
+
+    <div class="jarvis-grid">
+      <article class="jarvis-card">
+        <span>현재 메뉴</span>
+        <strong>{{ state.menu_name }}</strong>
+        <p>잔여 {{ state.remaining_count }} / 총 {{ state.total_count }}</p>
+      </article>
+      <article class="jarvis-card">
+        <span>혼잡도</span>
+        <strong>{{ state.congestion_level }}</strong>
+        <p>예상 대기 {{ state.wait_minutes }}분</p>
+      </article>
+      <article class="jarvis-card">
+        <span>예상 소진</span>
+        <strong>{{ state.sellout_eta }}</strong>
+        <p>업데이트 {{ state.updated_at }}</p>
+      </article>
+    </div>
+
+    <section class="jarvis-console" aria-label="Jarvis dialogue console">
+      <div class="console-row user">
+        <span>USER</span>
+        <p id="userText">마이크를 누르거나 아래 입력창에 질문을 입력하세요.</p>
+      </div>
+      <div class="console-row ai">
+        <span>JARVIS</span>
+        <p id="aiText">예: 오늘 학식 알려줘 / 지금 혼잡해? / 잔여 수량 몇 개야?</p>
+      </div>
+    </section>
+
+    <form class="jarvis-input" id="jarvisForm">
+      <input id="jarvisInput" name="message" autocomplete="off" placeholder="명령 입력: 오늘 학식 알려줘" />
+      <button type="submit">SEND</button>
+    </form>
+
+    <footer class="jarvis-footer">
+      <a href="/">학생 화면</a>
+      <a href="/admin/login">관리자 화면</a>
+      <a href="/status">운영 상태</a>
+    </footer>
+  </section>
+</main>
+{% endblock %}
