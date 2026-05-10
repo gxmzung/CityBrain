@@ -13,3 +13,8 @@ __pycache__/
 *.log
 .env
 .DS_Store
+
+# Local backup / Android local config
+README.backup.md
+local.properties
+**/local.properties
