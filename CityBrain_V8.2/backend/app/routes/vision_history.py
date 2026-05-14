@@ -3,7 +3,7 @@ from pathlib import Path
 import sqlite3
 
 from fastapi import APIRouter, Query
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, Response
 
 from app.routes.vision import get_vision_congestion
 
@@ -303,6 +303,7 @@ def admin_vision_history_page():
         <button onclick="saveNow()">현재 혼잡도 저장</button>
         <button onclick="loadAll()">기록 새로고침</button>
         <button onclick="toggleAutoSave()">자동 저장 ON/OFF</button>
+        <button onclick="downloadCsv()">CSV 다운로드</button>
       </div>
       <p id="status" class="note">대기 중...</p>
     </section>
@@ -406,6 +407,10 @@ def admin_vision_history_page():
       `).join("");
     }
 
+    function downloadCsv() {
+      window.location.href = "/api/vision/history/export.csv?limit=1000";
+    }
+
     function toggleAutoSave() {
       autoSave = !autoSave;
       const state = document.getElementById("autoSaveState");
@@ -429,3 +434,55 @@ def admin_vision_history_page():
 </body>
 </html>
 """
+
+
+@router.get("/api/vision/history/export.csv")
+def export_vision_history_csv(limit: int = Query(default=100, ge=1, le=1000)):
+    init_vision_history_db()
+
+    with get_conn() as conn:
+        rows = conn.execute(
+            """
+            SELECT *
+            FROM vision_congestion_logs
+            ORDER BY id DESC
+            LIMIT ?
+            """,
+            (limit,),
+        ).fetchall()
+
+    headers = [
+        "id",
+        "saved_at",
+        "ok",
+        "source",
+        "person_count",
+        "congestion",
+        "updated_at",
+        "method",
+        "privacy_note",
+        "raw_error",
+    ]
+
+    lines = [",".join(headers)]
+
+    for row in rows:
+        values = []
+        for key in headers:
+            value = row[key]
+            if value is None:
+                value = ""
+            value = str(value).replace('"', '""')
+            values.append(f'"{value}"')
+        lines.append(",".join(values))
+
+    csv_text = "\n".join(lines)
+
+    return Response(
+        content=csv_text,
+        media_type="text/csv; charset=utf-8",
+        headers={
+            "Content-Disposition": "attachment; filename=citybrain_vision_history.csv"
+        },
+    )
+
