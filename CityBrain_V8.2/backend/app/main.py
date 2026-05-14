@@ -18,7 +18,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 from app.db import init_db
-from app.routes import student, admin, kiosk, roadmap, auth, ops, jarvis
+from app.routes import student, admin, kiosk, roadmap, auth, ops, jarvis, vision
 
 
 app = FastAPI(
@@ -48,4 +48,5 @@ app.include_router(kiosk.router)     # Kiosk / sales-flow prototype
 app.include_router(roadmap.router)   # Roadmap and expansion pages
 app.include_router(auth.router)      # Login and authentication
 app.include_router(ops.router)       # Operations data and status
-app.include_router(jarvis.router)    # Jarvis assistant prototype
+app.include_router(jarvis.router)
+app.include_router(vision.router)    # Jarvis assistant prototype
