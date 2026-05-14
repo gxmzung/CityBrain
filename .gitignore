@@ -57,3 +57,8 @@ __pycache__/
 .DS_Store
 yolo*.pt
 *.zip
+
+# Local presentation/material archives
+CityBrain_V8.2_자료/
+기획서/
+포스터/
