@@ -537,3 +537,21 @@ Added campus pilot proposal, privacy/video handling draft, and operator runbook.
 ### v9.0
 
 Packaged the project as a campus pilot-ready MVP.
+
+---
+
+### v9.4 Auto Vision Logging
+
+CityBrain v9.4 adds automatic vision congestion logging.
+
+Admin auto logging page:
+
+    http://127.0.0.1:8080/admin/vision-auto-logging
+
+Auto logging APIs:
+
+    GET  /api/vision/auto-logging/status
+    POST /api/vision/auto-logging/start?interval_seconds=60
+    POST /api/vision/auto-logging/stop
+    POST /api/vision/auto-logging/run-once
+
