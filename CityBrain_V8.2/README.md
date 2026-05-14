@@ -317,4 +317,14 @@ This is an MVP/demo module.
 It supports webcam-based testing and can be extended to RTSP CCTV/IP camera streams.
 It does not aim to identify individuals or store original video.
 The goal is to calculate congestion statistics based on people count or queue length.
-Official deployment would require CCTV policy, privacy, and access permission review.
+Official deployment would require CCTV policy, privacy, and access permission review.\n
+---
+
+## Campus Pilot Documents
+
+CityBrain의 학교 파일럿 검토를 위한 문서는 아래에 정리했다.
+
+- [CAMPUS_PILOT_PROPOSAL.md](./docs/CAMPUS_PILOT_PROPOSAL.md)
+- [VISION_PRIVACY_POLICY_DRAFT.md](./docs/VISION_PRIVACY_POLICY_DRAFT.md)
+- [OPERATOR_RUNBOOK_VISION.md](./docs/OPERATOR_RUNBOOK_VISION.md)
+\n
