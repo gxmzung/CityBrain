@@ -96,11 +96,11 @@ This demonstrates both student-facing value and admin-side operational value in 
 ## Current Main Version
 
 ```text
-Current main implementation: CityBrain_V8.2
+Current main implementation: CityBrain
 Previous iteration:          CityBrain_V8.1
 ```
 
-`CityBrain_V8.2` includes:
+`CityBrain` includes:
 
 - FastAPI backend
 - admin web dashboard
@@ -125,7 +125,7 @@ CityBrain/
 │  ├─ docs/
 │  └─ scripts/
 │
-├─ CityBrain_V8.2/
+├─ 
 │  ├─ backend/
 │  │  ├─ app/
 │  │  ├─ data/
@@ -196,7 +196,7 @@ CityBrain/
 ### Backend demo
 
 ```bash
-cd CityBrain_V8.2/backend
+cd backend
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -216,7 +216,7 @@ API docs:    http://127.0.0.1:8000/docs
 Open the Android project:
 
 ```text
-CityBrain_V8.2/android
+android
 ```
 
 Configure the backend URL in the Android build configuration before running on a device.
@@ -282,4 +282,4 @@ These gaps are documented intentionally because the project is positioned as a r
 
 CityBrain is a smart campus cafeteria MVP.
 
-The current main version is `CityBrain_V8.2`, with backend, Android, documentation, and UI/UX evidence included.
+The current main version is `CityBrain`, with backend, Android, documentation, and UI/UX evidence included.

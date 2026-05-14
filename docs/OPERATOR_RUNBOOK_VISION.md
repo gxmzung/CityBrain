@@ -42,7 +42,7 @@ CityBrain Vision 기능은 두 개의 서버로 구성됩니다.
 
 터미널 1에서 실행합니다.
 
-    cd ~/Documents/001.개발/CityBrain/CityBrain_V8.2/vision/congestion_demo
+    cd ~/Documents/001.개발/CityBrain/vision/congestion_demo
     source .venv/bin/activate
     python app.py
 
@@ -54,7 +54,7 @@ CityBrain Vision 기능은 두 개의 서버로 구성됩니다.
 
 터미널 2에서 실행합니다.
 
-    cd ~/Documents/001.개발/CityBrain/CityBrain_V8.2/backend
+    cd ~/Documents/001.개발/CityBrain/backend
     source ../.venv/bin/activate
     uvicorn app.main:app --host 127.0.0.1 --port 8080 --reload
 
@@ -136,7 +136,7 @@ YOLO 서버가 꺼진 경우 CityBrain /api/vision/congestion은 fallback 응답
 
 YOLO 실행 중 자동으로 yolo11n.pt 파일이 다운로드될 수 있습니다. 이 파일은 GitHub에 올리지 않습니다.
 
-    cd ~/Documents/001.개발/CityBrain/CityBrain_V8.2
+    cd ~/Documents/001.개발/CityBrain
     rm -f vision/congestion_demo/yolo11n.pt
     git status
 
