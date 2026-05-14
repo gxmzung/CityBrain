@@ -644,3 +644,17 @@ The report summarizes:
 - school-facing summary text
 
 This helps convert raw congestion logs into a pilot operation summary that can be reviewed by school staff or cafeteria operators.
+
+---
+
+### v9.8 Pilot Evaluation Docs
+
+CityBrain v9.8 adds pilot operation and evaluation documents.
+
+Documents:
+
+    docs/PILOT_EVALUATION_METRICS.md
+    docs/PILOT_OPERATION_CHECKLIST.md
+
+These documents define how to operate a limited cafeteria pilot, what metrics to evaluate, and what privacy/operation checks must be completed before real campus use.
+
