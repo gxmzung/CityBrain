@@ -617,3 +617,30 @@ Environment variable:
     CITYBRAIN_ADMIN_KEY=citybrain-local-admin
 
 This is not a full production login system. It is a lightweight local MVP guard to prevent unauthenticated access to administrator functions during pilot testing.
+
+---
+
+### v9.7 Pilot Report Summary
+
+CityBrain v9.7 adds an admin-only pilot report page based on stored vision congestion logs.
+
+Admin report page:
+
+    http://127.0.0.1:8080/admin/vision-pilot-report?admin_key=citybrain-local-admin
+
+Report API:
+
+    GET /api/vision/pilot-report?limit=1000
+
+The report summarizes:
+
+- total congestion log count
+- average detected people
+- maximum detected people
+- minimum detected people
+- congestion-level counts
+- hourly average people count
+- recent 10 logs
+- school-facing summary text
+
+This helps convert raw congestion logs into a pilot operation summary that can be reviewed by school staff or cafeteria operators.
