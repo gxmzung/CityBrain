@@ -18,7 +18,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 from app.db import init_db
-from app.routes import student, admin, kiosk, roadmap, auth, ops, jarvis, vision, vision_report, vision_page, vision_report
+from app.routes import student, admin, kiosk, roadmap, auth, ops, jarvis, vision, vision_page, vision_report
 
 
 app = FastAPI(
@@ -51,4 +51,5 @@ app.include_router(ops.router)       # Operations data and status
 app.include_router(jarvis.router)
 app.include_router(vision.router)
 app.include_router(vision_page.router)
-app.include_router(vision_report.router)    # Jarvis assistant prototype
+app.include_router(vision_report.router)
+    # Jarvis assistant prototype
