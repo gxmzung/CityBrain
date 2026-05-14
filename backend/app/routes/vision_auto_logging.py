@@ -1,5 +1,5 @@
 import asyncio
-from datetime import datetime
+from datetime import datetime, time
 from typing import Optional
 
 from fastapi import APIRouter, Query
@@ -13,22 +13,66 @@ _auto_task: Optional[asyncio.Task] = None
 _auto_state = {
     "enabled": False,
     "interval_seconds": 60,
+    "operating_start": "11:30",
+    "operating_end": "13:30",
+    "respect_operating_window": True,
     "success_count": 0,
+    "skip_count": 0,
     "failure_count": 0,
     "last_saved_at": None,
+    "last_skipped_at": None,
     "last_error": None,
     "started_at": None,
+    "last_result": None,
 }
+
+
+def _parse_hhmm(value: str) -> time:
+    try:
+        hour, minute = value.strip().split(":")
+        return time(hour=int(hour), minute=int(minute))
+    except Exception:
+        raise ValueError("time must be HH:MM format")
+
+
+def _now_hhmm() -> str:
+    return datetime.now().strftime("%H:%M")
+
+
+def _is_within_operating_window(now: Optional[time] = None) -> bool:
+    if not _auto_state["respect_operating_window"]:
+        return True
+
+    now_time = now or datetime.now().time()
+    start = _parse_hhmm(_auto_state["operating_start"])
+    end = _parse_hhmm(_auto_state["operating_end"])
+
+    if start <= end:
+        return start <= now_time <= end
+
+    # Handles overnight windows, for example 22:00 ~ 02:00
+    return now_time >= start or now_time <= end
 
 
 async def _auto_logging_loop():
     while _auto_state["enabled"]:
         try:
-            result = await save_current_vision_congestion()
-            _auto_state["success_count"] += 1
-            _auto_state["last_saved_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            _auto_state["last_error"] = None
-            _auto_state["last_result"] = result
+            if _is_within_operating_window():
+                result = await save_current_vision_congestion()
+                _auto_state["success_count"] += 1
+                _auto_state["last_saved_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                _auto_state["last_error"] = None
+                _auto_state["last_result"] = result
+            else:
+                _auto_state["skip_count"] += 1
+                _auto_state["last_skipped_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                _auto_state["last_result"] = {
+                    "ok": True,
+                    "message": "skipped because current time is outside operating window",
+                    "now": _now_hhmm(),
+                    "operating_start": _auto_state["operating_start"],
+                    "operating_end": _auto_state["operating_end"],
+                }
         except Exception as exc:
             _auto_state["failure_count"] += 1
             _auto_state["last_error"] = str(exc)
@@ -42,28 +86,47 @@ def _task_running() -> bool:
 
 @router.get("/api/vision/auto-logging/status")
 def get_auto_logging_status():
+    within_window = _is_within_operating_window()
+
     return {
         "ok": True,
         "enabled": _auto_state["enabled"],
         "task_running": _task_running(),
         "interval_seconds": _auto_state["interval_seconds"],
+        "operating_start": _auto_state["operating_start"],
+        "operating_end": _auto_state["operating_end"],
+        "respect_operating_window": _auto_state["respect_operating_window"],
+        "within_operating_window": within_window,
+        "now_hhmm": _now_hhmm(),
         "success_count": _auto_state["success_count"],
+        "skip_count": _auto_state["skip_count"],
         "failure_count": _auto_state["failure_count"],
         "last_saved_at": _auto_state["last_saved_at"],
+        "last_skipped_at": _auto_state["last_skipped_at"],
         "last_error": _auto_state["last_error"],
         "started_at": _auto_state["started_at"],
-        "purpose": "Automatically save people-count-based congestion statistics without storing original video.",
+        "last_result": _auto_state["last_result"],
+        "purpose": "Automatically save people-count-based congestion statistics during the configured operating window without storing original video.",
     }
 
 
 @router.post("/api/vision/auto-logging/start")
 async def start_auto_logging(
-    interval_seconds: int = Query(default=60, ge=10, le=3600)
+    interval_seconds: int = Query(default=60, ge=10, le=3600),
+    start_time: str = Query(default="11:30"),
+    end_time: str = Query(default="13:30"),
+    respect_operating_window: bool = Query(default=True),
 ):
     global _auto_task
 
+    _parse_hhmm(start_time)
+    _parse_hhmm(end_time)
+
     _auto_state["enabled"] = True
     _auto_state["interval_seconds"] = interval_seconds
+    _auto_state["operating_start"] = start_time
+    _auto_state["operating_end"] = end_time
+    _auto_state["respect_operating_window"] = respect_operating_window
 
     if not _auto_state["started_at"]:
         _auto_state["started_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -76,6 +139,10 @@ async def start_auto_logging(
         "message": "vision auto logging started",
         "enabled": _auto_state["enabled"],
         "interval_seconds": _auto_state["interval_seconds"],
+        "operating_start": _auto_state["operating_start"],
+        "operating_end": _auto_state["operating_end"],
+        "respect_operating_window": _auto_state["respect_operating_window"],
+        "within_operating_window": _is_within_operating_window(),
         "task_running": _task_running(),
     }
 
@@ -93,17 +160,35 @@ def stop_auto_logging():
 
 
 @router.post("/api/vision/auto-logging/run-once")
-async def run_auto_logging_once():
+async def run_auto_logging_once(
+    ignore_operating_window: bool = Query(default=True)
+):
+    if not ignore_operating_window and not _is_within_operating_window():
+        _auto_state["skip_count"] += 1
+        _auto_state["last_skipped_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        return {
+            "ok": True,
+            "message": "skipped because current time is outside operating window",
+            "within_operating_window": False,
+            "now_hhmm": _now_hhmm(),
+            "operating_start": _auto_state["operating_start"],
+            "operating_end": _auto_state["operating_end"],
+            "last_skipped_at": _auto_state["last_skipped_at"],
+        }
+
     result = await save_current_vision_congestion()
     _auto_state["success_count"] += 1
     _auto_state["last_saved_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     _auto_state["last_error"] = None
+    _auto_state["last_result"] = result
 
     return {
         "ok": True,
         "message": "vision congestion saved once",
         "result": result,
         "last_saved_at": _auto_state["last_saved_at"],
+        "within_operating_window": _is_within_operating_window(),
     }
 
 
@@ -123,7 +208,7 @@ def admin_vision_auto_logging_page():
       color: #111827;
     }
     .wrap {
-      max-width: 980px;
+      max-width: 1080px;
       margin: 0 auto;
       padding: 32px 20px;
     }
@@ -137,6 +222,10 @@ def admin_vision_auto_logging_page():
     h1 {
       margin: 0 0 8px;
       font-size: 28px;
+    }
+    h2 {
+      margin: 0 0 14px;
+      font-size: 20px;
     }
     .sub {
       color: #6b7280;
@@ -162,6 +251,7 @@ def admin_vision_auto_logging_page():
     .metric .value {
       font-size: 22px;
       font-weight: 800;
+      word-break: break-all;
     }
     .row {
       display: flex;
@@ -196,6 +286,11 @@ def admin_vision_auto_logging_page():
       border-radius: 12px;
       font-size: 14px;
     }
+    label {
+      font-size: 13px;
+      color: #374151;
+      font-weight: 700;
+    }
     pre {
       background: #0f172a;
       color: #d1fae5;
@@ -211,6 +306,15 @@ def admin_vision_auto_logging_page():
       text-decoration: none;
       font-weight: 700;
     }
+    .badge {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: #eef2ff;
+      color: #3730a3;
+      font-size: 13px;
+      font-weight: 800;
+    }
   </style>
 </head>
 <body>
@@ -218,8 +322,8 @@ def admin_vision_auto_logging_page():
     <div class="card">
       <h1>CityBrain Vision Auto Logging</h1>
       <div class="sub">
-        YOLO 혼잡도 값을 일정 주기로 자동 저장하는 v9.4 관리자 화면입니다.
-        영상 원본은 저장하지 않고 사람 수, 혼잡도, 측정 시각 중심의 통계값만 기록하는 것을 목표로 합니다.
+        YOLO 혼잡도 값을 설정한 운영 시간대에만 자동 저장하는 v9.5 관리자 화면입니다.
+        영상 원본은 저장하지 않고 사람 수, 혼잡도, 측정 시각 중심의 통계값만 기록합니다.
       </div>
 
       <div class="grid">
@@ -232,12 +336,28 @@ def admin_vision_auto_logging_page():
           <div class="value" id="running">-</div>
         </div>
         <div class="metric">
+          <div class="label">Within Window</div>
+          <div class="value" id="withinWindow">-</div>
+        </div>
+        <div class="metric">
+          <div class="label">Operating Window</div>
+          <div class="value" id="window">-</div>
+        </div>
+        <div class="metric">
           <div class="label">Interval</div>
           <div class="value" id="interval">-</div>
         </div>
         <div class="metric">
+          <div class="label">Now</div>
+          <div class="value" id="now">-</div>
+        </div>
+        <div class="metric">
           <div class="label">Success Count</div>
           <div class="value" id="success">-</div>
+        </div>
+        <div class="metric">
+          <div class="label">Skip Count</div>
+          <div class="value" id="skip">-</div>
         </div>
         <div class="metric">
           <div class="label">Failure Count</div>
@@ -247,18 +367,44 @@ def admin_vision_auto_logging_page():
           <div class="label">Last Saved</div>
           <div class="value" id="lastSaved">-</div>
         </div>
+        <div class="metric">
+          <div class="label">Last Skipped</div>
+          <div class="value" id="lastSkipped">-</div>
+        </div>
+        <div class="metric">
+          <div class="label">Window Mode</div>
+          <div class="value" id="windowMode">-</div>
+        </div>
       </div>
 
       <div class="row">
+        <label>Interval</label>
         <input id="intervalInput" type="number" min="10" max="3600" value="60" />
+
+        <label>Start</label>
+        <input id="startInput" type="time" value="11:30" />
+
+        <label>End</label>
+        <input id="endInput" type="time" value="13:30" />
+
+        <label>
+          <input id="respectWindowInput" type="checkbox" checked />
+          운영 시간대 적용
+        </label>
+      </div>
+
+      <div class="row">
         <button class="primary" onclick="startAuto()">Start Auto Logging</button>
         <button class="danger" onclick="stopAuto()">Stop</button>
         <button class="plain" onclick="runOnce()">Run Once</button>
+        <button class="plain" onclick="runOnceWithWindow()">Run Once with Window Check</button>
         <button class="plain" onclick="loadStatus()">Refresh</button>
       </div>
     </div>
 
     <div class="card links">
+      <span class="badge">v9.5 operating window</span>
+      <br /><br />
       <a href="/admin/vision-history">Vision History</a>
       <a href="/admin/vision-report">Vision Report</a>
       <a href="/api/vision/history/export.csv?limit=1000">Download CSV</a>
@@ -277,18 +423,37 @@ def admin_vision_auto_logging_page():
 
       document.getElementById("enabled").textContent = data.enabled ? "ON" : "OFF";
       document.getElementById("running").textContent = data.task_running ? "YES" : "NO";
+      document.getElementById("withinWindow").textContent = data.within_operating_window ? "YES" : "NO";
+      document.getElementById("window").textContent = data.operating_start + " ~ " + data.operating_end;
       document.getElementById("interval").textContent = data.interval_seconds + "s";
+      document.getElementById("now").textContent = data.now_hhmm || "-";
       document.getElementById("success").textContent = data.success_count;
+      document.getElementById("skip").textContent = data.skip_count;
       document.getElementById("failure").textContent = data.failure_count;
       document.getElementById("lastSaved").textContent = data.last_saved_at || "-";
+      document.getElementById("lastSkipped").textContent = data.last_skipped_at || "-";
+      document.getElementById("windowMode").textContent = data.respect_operating_window ? "ON" : "OFF";
       document.getElementById("raw").textContent = JSON.stringify(data, null, 2);
+
+      document.getElementById("intervalInput").value = data.interval_seconds || 60;
+      document.getElementById("startInput").value = data.operating_start || "11:30";
+      document.getElementById("endInput").value = data.operating_end || "13:30";
+      document.getElementById("respectWindowInput").checked = !!data.respect_operating_window;
     }
 
     async function startAuto() {
       const interval = document.getElementById("intervalInput").value || 60;
-      await fetch("/api/vision/auto-logging/start?interval_seconds=" + interval, {
-        method: "POST"
-      });
+      const start = document.getElementById("startInput").value || "11:30";
+      const end = document.getElementById("endInput").value || "13:30";
+      const respect = document.getElementById("respectWindowInput").checked;
+
+      const url = "/api/vision/auto-logging/start"
+        + "?interval_seconds=" + encodeURIComponent(interval)
+        + "&start_time=" + encodeURIComponent(start)
+        + "&end_time=" + encodeURIComponent(end)
+        + "&respect_operating_window=" + encodeURIComponent(respect);
+
+      await fetch(url, { method: "POST" });
       await loadStatus();
     }
 
@@ -300,7 +465,14 @@ def admin_vision_auto_logging_page():
     }
 
     async function runOnce() {
-      await fetch("/api/vision/auto-logging/run-once", {
+      await fetch("/api/vision/auto-logging/run-once?ignore_operating_window=true", {
+        method: "POST"
+      });
+      await loadStatus();
+    }
+
+    async function runOnceWithWindow() {
+      await fetch("/api/vision/auto-logging/run-once?ignore_operating_window=false", {
         method: "POST"
       });
       await loadStatus();

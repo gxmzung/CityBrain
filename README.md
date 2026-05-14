@@ -555,3 +555,33 @@ Auto logging APIs:
     POST /api/vision/auto-logging/stop
     POST /api/vision/auto-logging/run-once
 
+
+---
+
+### v9.5 Vision Operating Window
+
+CityBrain v9.5 adds operating-window control for automatic vision congestion logging.
+
+The auto logging feature can now save congestion records only during a configured time window, such as the lunch peak period.
+
+Default operating window:
+
+    11:30 ~ 13:30
+
+Admin page:
+
+    http://127.0.0.1:8080/admin/vision-auto-logging
+
+Updated API example:
+
+    POST /api/vision/auto-logging/start?interval_seconds=60&start_time=11:30&end_time=13:30&respect_operating_window=true
+
+Status API includes:
+
+    within_operating_window
+    operating_start
+    operating_end
+    skip_count
+    last_skipped_at
+
+This makes the vision logging module more suitable for a limited campus cafeteria pilot because the system does not need to collect data outside the intended operation time.
