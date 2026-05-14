@@ -453,6 +453,7 @@ CityBrain 시연 및 실행 절차는 아래 문서에 정리했다.
 - [CITYBRAIN_CODE_FLOW.md](./CITYBRAIN_CODE_FLOW.md)
 - [code-reading-log.md](./code-reading-log.md)
 - [docs/OPERATOR_RUNBOOK_VISION.md](./docs/OPERATOR_RUNBOOK_VISION.md)
+- [CCTV Privacy and Congestion Research](./docs/RESEARCH_CCTV_PRIVACY_AND_CONGESTION.md)
 
 ---
 
