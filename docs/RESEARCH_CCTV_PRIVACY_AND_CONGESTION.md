@@ -219,3 +219,200 @@ For school-facing communication, the strongest position is:
     and uses camera input only to generate people-count-based congestion statistics.
 
 Before real deployment, CCTV purpose, signage, camera angle, access control, and school privacy review must be completed.
+
+---
+
+## 13. School CCTV and Video Information Processing Review
+
+### 13.1 Purpose
+
+This section reviews whether CityBrain's camera-based congestion measurement can be applied in an actual university cafeteria environment.
+
+The purpose is to examine a real-time congestion measurement system within the scope of privacy protection guidelines and to support a safer campus environment.
+
+CityBrain should be positioned as a congestion statistics system, not a personal identification or surveillance system.
+
+---
+
+### 13.2 University CCTV Operation Criteria
+
+CCTV or fixed video information processing devices in a university are generally operated for the following purposes.
+
+- Crime prevention
+- Facility management
+- Fire prevention
+- Safety accident prevention
+- Access control
+- Facility protection
+
+If CityBrain uses an existing CCTV feed or installs a separate camera, the system purpose must be reviewed carefully.
+
+The key issue is whether cafeteria congestion measurement is compatible with the original installation purpose of the camera.
+
+If the existing CCTV was installed only for crime prevention or facility safety, using it for congestion analysis may require additional review by the school's privacy officer or facility management department.
+
+---
+
+### 13.3 Required Notice Items
+
+Before a real campus pilot, students should be able to recognize that camera-based congestion measurement is being tested.
+
+A notice should include the following items.
+
+- Installation purpose
+- Camera location
+- Shooting range
+- Operating time
+- Responsible department or manager
+- Contact information
+- Stored data
+- Data not stored
+- Inquiry method
+
+Example notice:
+
+    CityBrain 학생식당 혼잡도 안내 파일럿 운영 안내
+
+    본 구역에서는 학생식당 혼잡도 안내 및 운영 개선 가능성 검토를 위해
+    AI 기반 사람 수 통계 측정 파일럿이 진행될 수 있습니다.
+
+    - 설치 목적: 학생식당 혼잡도 안내 및 운영 개선 검토
+    - 처리 방식: 카메라 영상에서 사람 수 통계값만 산출
+    - 저장 데이터: 사람 수, 혼잡도, 측정 시각
+    - 저장하지 않는 데이터: 영상 원본, 얼굴 이미지, 개인 식별 정보
+    - 촬영 범위: 학생식당 입구 또는 대기열 일부
+    - 운영 시간: 파일럿 기간 중 지정 시간대
+    - 관리 부서/담당자: 학교 협의 후 지정
+    - 문의: 학교 협의 후 지정
+
+---
+
+### 13.4 Statistical Processing Without Original Video Storage
+
+CityBrain should avoid storing original video, image captures, face images, or personal identifiers.
+
+The recommended storage policy is as follows.
+
+| Item | Stored? | Description |
+|---|---:|---|
+| Person count | Yes | Number of detected people |
+| Congestion level | Yes | Low, normal, crowded, etc. |
+| Measurement time | Yes | Time when the data was generated |
+| Source | Yes | Webcam, RTSP, or module source |
+| Original video | No | Video files should not be stored |
+| Image capture | No | Frame images should not be saved |
+| Face image | No | Face images or features should not be stored |
+| Student identity | No | Student ID, name, or individual identifier should not be stored |
+| Movement path | No | Individual tracking should not be performed |
+
+CityBrain's stored data should be limited to statistical values such as person count, congestion level, and timestamp.
+
+The stored statistics should not be restorable into original video or individual behavior records.
+
+---
+
+### 13.5 Privacy Protection Measures
+
+CityBrain should apply privacy protection measures from the early pilot stage.
+
+Recommended measures:
+
+- Do not display original video on the operation dashboard.
+- Show only person count and congestion level whenever possible.
+- Disable video recording and image capture.
+- Do not use face recognition.
+- Do not track individuals across time or locations.
+- Limit the camera angle to the cafeteria entrance or queue area.
+- Use real-time mosaic or low-resolution preview only if a visual debugging screen is unavoidable.
+- Keep debugging screens local and disable them during real campus operation.
+
+---
+
+### 13.6 Prevention of Purpose Misuse
+
+CityBrain should be used only for cafeteria congestion guidance and operation improvement.
+
+The system should not be used for:
+
+- Student surveillance
+- Individual identification
+- Attendance checking
+- Behavior tracking
+- Face recognition
+- Personal movement analysis
+- Non-cafeteria monitoring purposes
+
+The system purpose should be clearly limited to congestion statistics and cafeteria operation support.
+
+---
+
+### 13.7 Access Control and Security
+
+Admin pages, CSV export, and history logs should be accessible only to authorized users.
+
+Before real deployment, the following items should be reviewed.
+
+- Admin login
+- Role-based access control
+- CSV download permission
+- Server access restriction
+- HTTPS for external access
+- Environment variable based configuration
+- Access log management
+- Confirmation that original video storage is disabled
+
+Detailed retention periods and security requirements for access logs should follow the school's privacy policy and applicable legal guidelines.
+
+---
+
+### 13.8 External Vendor or Operator Integration
+
+If camera analysis, server operation, POS data, or kiosk data is handled by an external company, the school should review whether it falls under personal information processing consignment.
+
+External integration should review the following items.
+
+- Consignment contract
+- Personal information protection clauses
+- Processing purpose and scope
+- Access permission limits
+- Re-consignment restrictions
+- Security incident responsibility
+- Data retention and deletion policy
+
+For an early CityBrain pilot, the safest approach is to avoid external vendor integration and run the system locally with test camera input.
+
+---
+
+## 14. Cafeteria Congestion Measurement Method Comparison
+
+CityBrain should not depend on only one measurement method. The system should be designed to expand step by step depending on school and cafeteria operator conditions.
+
+| Method | Description | Strength | Limitation | CityBrain Position |
+|---|---|---|---|---|
+| Kiosk or POS payment logs | Estimate cafeteria usage based on order count and payment time | High reliability and directly related to operation data | Requires vendor or cafeteria operator cooperation | Suitable for production stage |
+| Manual input | Staff manually enters congestion level | Simple and low privacy risk | Requires operator effort | Suitable for early MVP |
+| CCTV or RTSP plus YOLO | Estimate people count from camera input using AI | Real-time measurement without POS integration | Requires privacy and camera policy review | Suitable as pilot support module |
+| Wi-Fi or Bluetooth estimation | Estimate occupancy using nearby device signals | Can estimate space-level occupancy | May raise device tracking concerns | Not recommended for early pilot |
+| Student app check-in | Students submit visit or check-in data through the app | Can collect student-participation data | Low participation can reduce reliability | Optional support feature only |
+
+---
+
+## 15. Practical Conclusion
+
+The most realistic CityBrain deployment path is:
+
+1. Manual input based MVP
+2. YOLO-based auxiliary congestion measurement
+3. Automatic logging and CSV report
+4. Limited school pilot
+5. POS or kiosk data integration after operator agreement
+6. Meal demand prediction and operation optimization
+
+For the initial school-facing proposal, CityBrain should be described as:
+
+    A privacy-minimized cafeteria congestion statistics system
+    that stores person count, congestion level, and timestamp only.
+
+The strongest initial strategy is to combine manual input and YOLO-based auxiliary measurement.
+
+After the school and cafeteria operator agree on data access, CityBrain can expand to POS or kiosk payment log integration for more reliable operation analysis.
