@@ -1,88 +1,52 @@
 # CityBrain Smart Campus MVP
 
-## Current Status - v10.0 Portfolio Polish
+## Current Status - v9.0 Campus Pilot Ready
 
-CityBrain is a smart campus cafeteria MVP that helps students check cafeteria congestion before visiting and helps operators review congestion trends after operation.
+CityBrain has evolved from a cafeteria information MVP into a campus dining operation data platform prototype.
 
-The project started as a student cafeteria app, but it has been expanded into a pilot-ready campus operation package with YOLO-based congestion estimation, automatic logging, operating-window control, admin protection, CSV export, pilot reporting, and privacy-aware operation documents.
+Current implementation includes:
 
-This repository is organized as a school-facing MVP, not just a UI demo.
+- YOLO-based cafeteria congestion detection demo
+- CityBrain backend proxy API for vision congestion data
+- Student AI congestion status page
+- Admin AI congestion operation report
+- Vision congestion history logging
+- CSV export for recorded congestion data
+- Campus pilot proposal document
+- Vision privacy and video handling draft
+- Operator runbook for local pilot testing
 
----
-
-## 30-Second Summary
-
-CityBrain answers one simple campus problem:
-
-> “Can students and cafeteria operators know the cafeteria congestion level before and during lunch time without storing original video?”
-
-The current version supports:
-
-- Student-facing congestion status page
-- YOLO / webcam / RTSP-based person-count estimation
-- Backend proxy API for congestion status
-- Manual and automatic congestion logging
-- Operating-window based auto logging
-- Admin-only history, CSV export, and pilot report pages
-- Privacy-aware CCTV and video-processing documentation
-- Pilot evaluation metrics and operation checklist
-
-The strongest point of this project is not only the screen implementation.  
-It connects implementation, operation, privacy review, and pilot evaluation into one flow.
-
----
-
-## Why This Project Matters
-
-Most campus apps stop at showing static information.
-
-CityBrain focuses on an operational problem:
-
-- Students want to avoid crowded cafeteria times.
-- Cafeteria operators need time-based congestion data.
-- Schools need a privacy-aware way to test smart campus services.
-- Vendor or POS integration may not be available at the early stage.
-
-CityBrain therefore starts with a realistic path:
+Core pages:
 
 ```text
-Manual input
-→ YOLO-based auxiliary measurement
-→ Automatic logging
-→ Operating-window control
-→ Admin-only report
-→ CSV export
-→ Pilot evaluation
-→ Future POS / kiosk integration
-Current MVP Capabilities
-Area	Current Capability
-Student page	Students can view cafeteria congestion status
-Vision module	YOLO-based person count from webcam or RTSP source
-Backend API	FastAPI proxy and congestion status API
-History logging	Congestion records can be saved and reviewed
-Auto logging	Server can save congestion statistics automatically
-Operating window	Auto logging can be limited to selected time ranges
-Admin guard	Admin pages and control APIs require an admin key
-CSV export	Congestion history can be exported for review
-Pilot report	Stored logs are summarized into an operator-facing report
-Privacy docs	CCTV/video handling considerations are documented
-Evaluation docs	Pilot metrics and operation checklist are included
-School Pilot Positioning
+Student Vision Status:
+http://127.0.0.1:8080/student/vision-status
 
-CityBrain should be presented as:
+Admin Vision Report:
+http://127.0.0.1:8080/admin/vision-report
 
-A privacy-minimized cafeteria congestion statistics MVP
-that stores person count, congestion level, and timestamp only.
+Admin Vision History:
+http://127.0.0.1:8080/admin/vision-history
 
-It is not intended to be:
+Vision API:
+http://127.0.0.1:8080/api/vision/congestion
 
-a surveillance system
-a face recognition system
-a student tracking system
-an attendance-checking system
-a replacement for formal CCTV/privacy approval
+CSV Export:
+http://127.0.0.1:8080/api/vision/history/export.csv
+```
 
-Before any real campus deployment, the school should review camera purpose, notice signage, camera angle, admin access, server operation responsibility, and privacy policy.
+This project is still an MVP and not an official deployed university service.
+
+---
+
+Smart campus MVP focused on student dining operations, real-time cafeteria visibility, and admin-side operational decision support.
+
+This project was built to explore how a university dining service can provide better information for students and better operational awareness for administrators.
+
+> This repository is a portfolio/demo MVP.  
+> It is not an official deployed university service.
+
+---
 
 ## Key Technologies
 
