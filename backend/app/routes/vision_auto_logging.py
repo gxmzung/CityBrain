@@ -2,10 +2,11 @@ import asyncio
 from datetime import datetime, time
 from typing import Optional
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Depends, Query
 from fastapi.responses import HTMLResponse
 
 from app.routes.vision_history import save_current_vision_congestion
+from app.core.admin_auth import require_admin_key
 
 router = APIRouter(tags=["vision-auto-logging"])
 
@@ -84,7 +85,7 @@ def _task_running() -> bool:
     return _auto_task is not None and not _auto_task.done()
 
 
-@router.get("/api/vision/auto-logging/status")
+@router.get("/api/vision/auto-logging/status", dependencies=[Depends(require_admin_key)])
 def get_auto_logging_status():
     within_window = _is_within_operating_window()
 
@@ -110,7 +111,7 @@ def get_auto_logging_status():
     }
 
 
-@router.post("/api/vision/auto-logging/start")
+@router.post("/api/vision/auto-logging/start", dependencies=[Depends(require_admin_key)])
 async def start_auto_logging(
     interval_seconds: int = Query(default=60, ge=10, le=3600),
     start_time: str = Query(default="11:30"),
@@ -147,7 +148,7 @@ async def start_auto_logging(
     }
 
 
-@router.post("/api/vision/auto-logging/stop")
+@router.post("/api/vision/auto-logging/stop", dependencies=[Depends(require_admin_key)])
 def stop_auto_logging():
     _auto_state["enabled"] = False
 
@@ -159,7 +160,7 @@ def stop_auto_logging():
     }
 
 
-@router.post("/api/vision/auto-logging/run-once")
+@router.post("/api/vision/auto-logging/run-once", dependencies=[Depends(require_admin_key)])
 async def run_auto_logging_once(
     ignore_operating_window: bool = Query(default=True)
 ):
@@ -192,7 +193,7 @@ async def run_auto_logging_once(
     }
 
 
-@router.get("/admin/vision-auto-logging", response_class=HTMLResponse)
+@router.get("/admin/vision-auto-logging", response_class=HTMLResponse, dependencies=[Depends(require_admin_key)])
 def admin_vision_auto_logging_page():
     return """
 <!doctype html>
@@ -405,9 +406,9 @@ def admin_vision_auto_logging_page():
     <div class="card links">
       <span class="badge">v9.5 operating window</span>
       <br /><br />
-      <a href="/admin/vision-history">Vision History</a>
-      <a href="/admin/vision-report">Vision Report</a>
-      <a href="/api/vision/history/export.csv?limit=1000">Download CSV</a>
+      <a href="/admin/vision-history?admin_key=citybrain-local-admin">Vision History</a>
+      <a href="/admin/vision-report?admin_key=citybrain-local-admin">Vision Report</a>
+      <a href="/api/vision/history/export.csv?limit=1000&admin_key=citybrain-local-admin">Download CSV</a>
     </div>
 
     <div class="card">
@@ -417,8 +418,14 @@ def admin_vision_auto_logging_page():
   </div>
 
   <script>
+    const adminKey = new URLSearchParams(window.location.search).get("admin_key") || "";
+    function withAdminKey(url) {
+      const sep = url.includes("?") ? "&" : "?";
+      return url + sep + "admin_key=" + encodeURIComponent(adminKey);
+    }
+
     async function loadStatus() {
-      const res = await fetch("/api/vision/auto-logging/status");
+      const res = await fetch(withAdminKey("/api/vision/auto-logging/status"));
       const data = await res.json();
 
       document.getElementById("enabled").textContent = data.enabled ? "ON" : "OFF";
@@ -453,26 +460,26 @@ def admin_vision_auto_logging_page():
         + "&end_time=" + encodeURIComponent(end)
         + "&respect_operating_window=" + encodeURIComponent(respect);
 
-      await fetch(url, { method: "POST" });
+      await fetch(withAdminKey(url), { method: "POST" });
       await loadStatus();
     }
 
     async function stopAuto() {
-      await fetch("/api/vision/auto-logging/stop", {
+      await fetch(withAdminKey("/api/vision/auto-logging/stop"), {
         method: "POST"
       });
       await loadStatus();
     }
 
     async function runOnce() {
-      await fetch("/api/vision/auto-logging/run-once?ignore_operating_window=true", {
+      await fetch(withAdminKey("/api/vision/auto-logging/run-once?ignore_operating_window=true"), {
         method: "POST"
       });
       await loadStatus();
     }
 
     async function runOnceWithWindow() {
-      await fetch("/api/vision/auto-logging/run-once?ignore_operating_window=false", {
+      await fetch(withAdminKey("/api/vision/auto-logging/run-once?ignore_operating_window=false"), {
         method: "POST"
       });
       await loadStatus();

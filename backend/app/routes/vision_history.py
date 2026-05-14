@@ -2,7 +2,8 @@ from datetime import datetime
 from pathlib import Path
 import sqlite3
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Depends, Query
+from app.core.admin_auth import require_admin_key
 from fastapi.responses import HTMLResponse, Response
 
 from app.routes.vision import get_vision_congestion
@@ -101,7 +102,7 @@ async def save_current_vision_congestion():
     }
 
 
-@router.get("/api/vision/history")
+@router.get("/api/vision/history", dependencies=[Depends(require_admin_key)])
 def get_vision_history(limit: int = Query(default=20, ge=1, le=100)):
     init_vision_history_db()
 
@@ -123,7 +124,7 @@ def get_vision_history(limit: int = Query(default=20, ge=1, le=100)):
     }
 
 
-@router.get("/api/vision/history/summary")
+@router.get("/api/vision/history/summary", dependencies=[Depends(require_admin_key)])
 def get_vision_history_summary():
     init_vision_history_db()
 
@@ -167,7 +168,7 @@ def get_vision_history_summary():
     }
 
 
-@router.get("/admin/vision-history", response_class=HTMLResponse)
+@router.get("/admin/vision-history", response_class=HTMLResponse, dependencies=[Depends(require_admin_key)])
 def admin_vision_history_page():
     return """
 <!doctype html>
@@ -353,6 +354,12 @@ def admin_vision_history_page():
   </div>
 
   <script>
+      const adminKey = new URLSearchParams(window.location.search).get("admin_key") || "";
+      function withAdminKey(url) {
+        const sep = url.includes("?") ? "&" : "?";
+        return url + sep + "admin_key=" + encodeURIComponent(adminKey);
+      }
+
     let autoSave = false;
     let autoTimer = null;
 
@@ -374,7 +381,7 @@ def admin_vision_history_page():
     }
 
     async function loadSummary() {
-      const res = await fetch("/api/vision/history/summary");
+      const res = await fetch(withAdminKey("/api/vision/history/summary"));
       const data = await res.json();
 
       document.getElementById("totalLogs").textContent = data.total_logs ?? "-";
@@ -408,7 +415,7 @@ def admin_vision_history_page():
     }
 
     function downloadCsv() {
-      window.location.href = "/api/vision/history/export.csv?limit=1000";
+      window.location.href = withAdminKey("/api/vision/history/export.csv?limit=1000");
     }
 
     function toggleAutoSave() {
@@ -436,7 +443,7 @@ def admin_vision_history_page():
 """
 
 
-@router.get("/api/vision/history/export.csv")
+@router.get("/api/vision/history/export.csv", dependencies=[Depends(require_admin_key)])
 def export_vision_history_csv(limit: int = Query(default=100, ge=1, le=1000)):
     init_vision_history_db()
 

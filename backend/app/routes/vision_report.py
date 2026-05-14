@@ -1,10 +1,11 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi.responses import HTMLResponse
+from app.core.admin_auth import require_admin_key
 
 router = APIRouter(tags=["admin-vision-report"])
 
 
-@router.get("/admin/vision-report", response_class=HTMLResponse)
+@router.get("/admin/vision-report", response_class=HTMLResponse, dependencies=[Depends(require_admin_key)])
 def admin_vision_report_page():
     return """
 <!doctype html>

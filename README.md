@@ -585,3 +585,35 @@ Status API includes:
     last_skipped_at
 
 This makes the vision logging module more suitable for a limited campus cafeteria pilot because the system does not need to collect data outside the intended operation time.
+
+---
+
+### v9.6 Admin Auth Guard
+
+CityBrain v9.6 adds a simple admin key guard for local MVP admin pages and control APIs.
+
+Student-facing pages remain open, but admin pages, CSV export, and auto-logging control APIs require an admin key.
+
+Default local admin key:
+
+    citybrain-local-admin
+
+Admin pages:
+
+    http://127.0.0.1:8080/admin/vision-report?admin_key=citybrain-local-admin
+    http://127.0.0.1:8080/admin/vision-history?admin_key=citybrain-local-admin
+    http://127.0.0.1:8080/admin/vision-auto-logging?admin_key=citybrain-local-admin
+
+API header example:
+
+    X-Admin-Key: citybrain-local-admin
+
+Curl example:
+
+    curl -H "X-Admin-Key: citybrain-local-admin" http://127.0.0.1:8080/api/vision/auto-logging/status
+
+Environment variable:
+
+    CITYBRAIN_ADMIN_KEY=citybrain-local-admin
+
+This is not a full production login system. It is a lightweight local MVP guard to prevent unauthenticated access to administrator functions during pilot testing.
