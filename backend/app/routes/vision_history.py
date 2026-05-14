@@ -391,7 +391,7 @@ def admin_vision_history_page():
     }
 
     async function loadHistory() {
-      const res = await fetch("/api/vision/history?limit=30");
+      const res = await fetch(withAdminKey("/api/vision/history?limit=30"));
       const data = await res.json();
 
       const body = document.getElementById("historyBody");
