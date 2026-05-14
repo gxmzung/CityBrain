@@ -96,17 +96,17 @@ Student page:
 
 Admin pages:
 
-    http://127.0.0.1:8080/admin/vision-report?admin_key=citybrain-local-admin
-    http://127.0.0.1:8080/admin/vision-history?admin_key=citybrain-local-admin
-    http://127.0.0.1:8080/admin/vision-auto-logging?admin_key=citybrain-local-admin
-    http://127.0.0.1:8080/admin/vision-pilot-report?admin_key=citybrain-local-admin
+    http://127.0.0.1:8080/admin/vision-report?admin_key=<your-admin-key>
+    http://127.0.0.1:8080/admin/vision-history?admin_key=<your-admin-key>
+    http://127.0.0.1:8080/admin/vision-auto-logging?admin_key=<your-admin-key>
+    http://127.0.0.1:8080/admin/vision-pilot-report?admin_key=<your-admin-key>
 
 APIs:
 
     http://127.0.0.1:8080/api/vision/congestion
-    http://127.0.0.1:8080/api/vision/history?admin_key=citybrain-local-admin
-    http://127.0.0.1:8080/api/vision/history/export.csv?admin_key=citybrain-local-admin
-    http://127.0.0.1:8080/api/vision/pilot-report?admin_key=citybrain-local-admin
+    http://127.0.0.1:8080/api/vision/history?admin_key=<your-admin-key>
+    http://127.0.0.1:8080/api/vision/history/export.csv?admin_key=<your-admin-key>
+    http://127.0.0.1:8080/api/vision/pilot-report?admin_key=<your-admin-key>
 
 ---
 

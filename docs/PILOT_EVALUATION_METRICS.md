@@ -123,7 +123,7 @@ CityBrain v9.7 provides a pilot report page.
 
 Admin report page:
 
-    http://127.0.0.1:8080/admin/vision-pilot-report?admin_key=citybrain-local-admin
+    http://127.0.0.1:8080/admin/vision-pilot-report?admin_key=<your-admin-key>
 
 The report includes:
 

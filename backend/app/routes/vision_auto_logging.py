@@ -1,4 +1,5 @@
 import asyncio
+import os
 from datetime import datetime, time
 from typing import Optional
 
@@ -10,12 +11,15 @@ from app.core.admin_auth import require_admin_key
 
 router = APIRouter(tags=["vision-auto-logging"])
 
+DEFAULT_OPERATING_START = os.getenv("CITYBRAIN_OPERATING_START", "11:30")
+DEFAULT_OPERATING_END = os.getenv("CITYBRAIN_OPERATING_END", "13:30")
+
 _auto_task: Optional[asyncio.Task] = None
 _auto_state = {
     "enabled": False,
     "interval_seconds": 60,
-    "operating_start": "11:30",
-    "operating_end": "13:30",
+    "operating_start": DEFAULT_OPERATING_START,
+    "operating_end": DEFAULT_OPERATING_END,
     "respect_operating_window": True,
     "success_count": 0,
     "skip_count": 0,
@@ -114,8 +118,8 @@ def get_auto_logging_status():
 @router.post("/api/vision/auto-logging/start", dependencies=[Depends(require_admin_key)])
 async def start_auto_logging(
     interval_seconds: int = Query(default=60, ge=10, le=3600),
-    start_time: str = Query(default="11:30"),
-    end_time: str = Query(default="13:30"),
+    start_time: str = Query(default=DEFAULT_OPERATING_START),
+    end_time: str = Query(default=DEFAULT_OPERATING_END),
     respect_operating_window: bool = Query(default=True),
 ):
     global _auto_task

@@ -5,6 +5,7 @@ from fastapi import Header, HTTPException, Query, status
 
 
 DEFAULT_ADMIN_KEY = "citybrain-local-admin"
+# For real pilot use, set CITYBRAIN_ADMIN_KEY in the environment.
 
 
 def get_admin_key() -> str:

@@ -596,25 +596,25 @@ Student-facing pages remain open, but admin pages, CSV export, and auto-logging 
 
 Default local admin key:
 
-    citybrain-local-admin
+    <your-admin-key>
 
 Admin pages:
 
-    http://127.0.0.1:8080/admin/vision-report?admin_key=citybrain-local-admin
-    http://127.0.0.1:8080/admin/vision-history?admin_key=citybrain-local-admin
-    http://127.0.0.1:8080/admin/vision-auto-logging?admin_key=citybrain-local-admin
+    http://127.0.0.1:8080/admin/vision-report?admin_key=<your-admin-key>
+    http://127.0.0.1:8080/admin/vision-history?admin_key=<your-admin-key>
+    http://127.0.0.1:8080/admin/vision-auto-logging?admin_key=<your-admin-key>
 
 API header example:
 
-    X-Admin-Key: citybrain-local-admin
+    X-Admin-Key: <your-admin-key>
 
 Curl example:
 
-    curl -H "X-Admin-Key: citybrain-local-admin" http://127.0.0.1:8080/api/vision/auto-logging/status
+    curl -H "X-Admin-Key: <your-admin-key>" http://127.0.0.1:8080/api/vision/auto-logging/status
 
 Environment variable:
 
-    CITYBRAIN_ADMIN_KEY=citybrain-local-admin
+    CITYBRAIN_ADMIN_KEY=<your-admin-key>
 
 This is not a full production login system. It is a lightweight local MVP guard to prevent unauthenticated access to administrator functions during pilot testing.
 
@@ -626,7 +626,7 @@ CityBrain v9.7 adds an admin-only pilot report page based on stored vision conge
 
 Admin report page:
 
-    http://127.0.0.1:8080/admin/vision-pilot-report?admin_key=citybrain-local-admin
+    http://127.0.0.1:8080/admin/vision-pilot-report?admin_key=<your-admin-key>
 
 Report API:
 
@@ -658,3 +658,28 @@ Documents:
 
 These documents define how to operate a limited cafeteria pilot, what metrics to evaluate, and what privacy/operation checks must be completed before real campus use.
 
+
+---
+
+### v9.9 Config Hardening
+
+CityBrain v9.9 separates local demo settings from pilot-ready configuration.
+
+Environment variables:
+
+    CITYBRAIN_ADMIN_KEY=<your-admin-key>
+    VISION_MODULE_URL=http://127.0.0.1:8081/api/congestion/latest
+    CITYBRAIN_OPERATING_START=11:30
+    CITYBRAIN_OPERATING_END=13:30
+
+Protected admin pages require an admin key.
+
+Example:
+
+    http://127.0.0.1:8080/admin/vision-pilot-report?admin_key=<your-admin-key>
+
+API example:
+
+    curl -H "X-Admin-Key: <your-admin-key>" http://127.0.0.1:8080/api/vision/pilot-report
+
+This version keeps the local MVP simple while making configuration boundaries clearer for a future school pilot.

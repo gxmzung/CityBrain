@@ -1,9 +1,11 @@
+import os
+
 from fastapi import APIRouter
 import httpx
 
 router = APIRouter(prefix="/api/vision", tags=["vision"])
 
-YOLO_CONGESTION_API = "http://127.0.0.1:8081/api/congestion/latest"
+YOLO_CONGESTION_API = os.getenv("VISION_MODULE_URL", "http://127.0.0.1:8081/api/congestion/latest")
 
 
 @router.get("/congestion")
